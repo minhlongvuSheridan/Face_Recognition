@@ -3,8 +3,6 @@ Author: Minh Long Vu
 
 '''
 
-
-
 import os
 from os import listdir
 import shutil
