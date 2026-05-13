@@ -52,20 +52,7 @@ while True:
             length = side_length // 6
             
             conf = int(float(box.conf[0]) * 100)
-            currentArray = np.array([x1, y1, x2, y2, conf])
-            Detections = np.vstack((Detections, currentArray))
             
-    tracker_results = tracker.update(Detections)
-    for tracker_result in tracker_results:
-        x1, y1, x2, y2, id = map(int, tracker_result)
-        # if negative then convert it to zero
-        x1, y1, x2, y2 = [max(0, i) for i in (x1, y1, x2, y2)]
-        if id in track_dict:
-            name = track_dict.get(id)[0]
-            probability = track_dict.get(id)[1]
-            draw_corners(img, x1,y1,x2,y2,length,2)
-            draw_label(img, x1, y1, f"{name}: {probability:.2f}",(65,255,0),(0,0,0)) 
-        else:
             sub_image = img.copy()[y1:y2,x1:x2]
             sub_feat = embedder.embeddings([sub_image])
             sub_feat_norm = in_encoder.transform(sub_feat)
@@ -73,10 +60,8 @@ while True:
             best_class_idx = np.argmax(preds)
             probability = preds[0][best_class_idx] * 100
             name = out_encoder.inverse_transform([best_class_idx])[0]
-            if(probability >= 60):
-                track_dict[id] = [name, probability]
-                draw_corners(img, x1,y1,x2,y2,length,2)
-                draw_label(img, x1, y1, f"{name}: {probability:.2f}",(65,255,0),(0,0,0))
+            draw_corners(img, x1,y1,x2,y2,length,2)
+            draw_label(img, x1, y1, f"{name}: {probability:.2f}",(65,255,0),(0,0,0)) 
     
     end_time = time.time()
     elapsed_time = end_time - start_time  
