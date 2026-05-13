@@ -76,17 +76,28 @@ We now have *images* and *labels* for our model. However, it is not ready for tr
 - **Testing dataset**: this is used as final evalutaion of the model. It is used only when the model finish all the epochs. Think it is as "final exam"
 There are many ways of splitting those sets. For this tutorial, I choose the 70-15-15 splitting which means 70% for the training, 15% for the valdiation, and 15% for the testing, respectively.<br/>
 
-To ease the process of splitting dataset, I use the ```train_test_split``` function from the sklearn. Notice that the images and labels they have similiar names and only differ in extension. Our algorithm is to take all the file names and truncate away the extension. Then split it by using the ```train_test_split```. Since we have three subsets, we need to split 2 times
+To ease the process of splitting dataset, I use the ```train_test_split``` function from the sklearn. Notice that the images and labels they have similiar names and only differ in extension. Our algorithm is to take all the file names and truncate away the extension. Then split it by using the ```train_test_split```. Since we have three subsets, we need to split 2 times.
 #### 3.1.1 First split
+   First step is to load the images and labels. Since we are doing files so we only need to store their name together with their extensions
+```python
+images = list()
+    labels = list()
+    for img in listdir(images_dir):
+        # only take the name not extension
+        images.append(img)
+    for label in listdir(labels_dir):
+        
+        labels.append(label)
+```
    We will split the origional dataset into 85 for train_val and 15 for testing.
 ```{python}
-train_val, test, _, _ = train_test_split(
-    names, names, 
+train_val_images, test_images, train_val_labels, test_labels = train_test_split(
+    images, labels, 
     test_size = 0.15, 
-    random_state=42
+    random_state = 42
     )
 ```
-The ```train_test_split``` usually take features and labels but we only need the splitting features so it is basically same thing for us. ```_``` means we discard the results
+images and labels are list of 
 #### 3.1.2 Second split
 In the second split, we will split *train_val* into *train* and *val*. The first split is quite obvious where we can specify directly how much we want for the test_size. However, the second split is kinda tricky because *train_val* is just equal to *85* of the orgiional dataset so if we specify 15% for the *test_size*, it just result in 0.125 * 85% = 12,75% of the origional dataset for the *val*. This result is not expected since we want the *val* to be 15%. <br/>
 **Solution**<br/>
@@ -97,20 +108,19 @@ Lets call x be value of *test_size* of second split. This x basically the cut po
 *val* = x * *train_val* = x * 0.85N (2) <br/>
 From (1) and (2) we have <br/>
 x * 0.85N = 0.15N => x = 0.15 / 0.85 ~~ 17.65%<br/><br/>
-
 As shown above, for the second split, we need to specify *0.1765* instead of "0.15"
 
 ```{python}
-train, val, _, _ = train_test_split(
-    train_val, train_val, 
-    test_size = 0.1765, 
+train_images, val_images, train_labels, val_labels  = train_test_split(
+    train_val_images, train_val_labels, 
+    test_size= 0.1765, 
     random_state=42
     )
 ```
 ### 3.2 Structure to YOLO format
 For now we have all the subsets. But they are just the names which contains no useful information. We will base on this and move the corresponding files to the structure below
 <img width="367" height="625" alt="image" src="https://github.com/user-attachments/assets/6c223c9b-6382-48a9-aae5-aa4abed24dc9" />
-We can do this either manually or writing a script base on the name. If you write a script, be remember the images could be jpg, png or jpeg extensions.
+We can do this either manually or writing a script base on the name. The detail script is provided in the *split_data.py*
 ### 3.3 config.yaml
 This is the file that is specified when we train the model. Its job is to tell where the data reside and what are the class names. It might be little confused where we already put it in the "data" directory so why we need to specify it a gain? Basically, the config.yaml file could be anywhere. We could even put it in the same directory with the "data" folder and still work. We put it in inside the "data" is just general convention
 ```{yaml}
@@ -122,7 +132,7 @@ nc: 1
 names:
   0: Face
 ```
-- the *path* is the path to the *data* directory. 
+- the *path* is the path to the *data* directory. Do remember that if you load it to the cloud, you need to change the path (this will be shown in below section)
 - The *train*, *val*, and *test* are relative path inside that *data* to their coressponding path.
 - nc is the number of classes. We only have one class so it is 1
 - names: is the class name. 0 means the first class. Since we only have one class so 0 correspond to Face class
