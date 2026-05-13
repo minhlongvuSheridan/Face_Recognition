@@ -57,7 +57,9 @@ The YoLo is an deep learning model for object detection so it can not automatica
             conf = int(float(box.conf[0]) * 100)
   ```
   (x1,y1) and (x2,y2) are the top left and bottom right corners of bounding box, respectively. Internally they use tensor type so
-  we need to convert them back to integer to use
+  we need to convert them back to integer to use <br/>
+  since we just feed an frame every while loop. The results, despite the name, actually has one result but it is in array-like format so we can use for loop
+  to access it 
   Step 6: Draw the customized bounding box and labels on the frame before displaying it
   ```python
   side_length = x2 - x1
@@ -120,8 +122,62 @@ Add this outside below the the while loop *for result in results:*
 ```
 tracker_results = tracker.update(Detections)
 ```
-The tracker receive array object with the format [x1,y1,x2,y2,conf] and return [x1,y1,x2,y2,id]
-This id is what we use to track the object
+The tracker receive array object with the format [x1,y1,x2,y2,conf] and return [x1,y1,x2,y2,id] <br/>
+This id is what we use to track the object. Each tracker result is an id
+- Step 5: For each tracker result, we extract the bounding box points again and draw it
+  Add this below * tracker_results = tracker.update(Detections)*. Additionally, remove the *draw_corners* and *draw_labels* to this code
+  ```python
+  for tracker_result in tracker_results:
+        x1, y1, x2, y2, id = map(int, tracker_result)
+        x1, y1, x2, y2 = [max(0, i) for i in (x1, y1, x2, y2)]
+        side_length = x2 - x1
+        length = side_length // 6
+        draw_label(img, x1, y1, f"Face: {id}",(65,255,0),(0,0,0)) 
+        draw_corners(img, x1,y1,x2,y2,length,2)
+  ```
+Complete code for YOLO+ Tracking
+```python
+import cv2
+from ultralytics import YOLO
+
+from draw_box import *
+from sort import *
+
+model = YOLO("./detection.pt") 
+
+tracker = Sort(max_age = 20, min_hits = 3,iou_threshold=0.3)
+track_dict = dict()
+
+
+lap_camera = cv2.VideoCapture(0)
+
+while True:
+    success, img = lap_camera.read()
+    Detections = np.empty((0, 5))
+    results = model(img, stream = True)
+    for result in results:
+        for box in result.boxes:
+            x1, y1, x2, y2 = map(int, box.xyxy[0])
+            conf = int(float(box.conf[0]) * 100)
+            
+            if conf > 50:
+                currentArray = np.array([x1, y1, x2, y2, conf])
+                Detections = np.vstack((Detections, currentArray))
+    
+            
+    
+        
+    tracker_results = tracker.update(Detections)
+    for tracker_result in tracker_results:
+        x1, y1, x2, y2, id = map(int, tracker_result)
+        x1, y1, x2, y2 = [max(0, i) for i in (x1, y1, x2, y2)]
+        side_length = x2 - x1
+        length = side_length // 6
+        draw_label(img, x1, y1, f"Face: {id}",(65,255,0),(0,0,0)) 
+        draw_corners(img, x1,y1,x2,y2,length,2)
+    cv2.imshow("Image", img)
+    cv2.waitKey(1)
+```
 # Recognition: FaceNet and SVM
 After knowing that if it is the same face, we will ask final key question "whose face is this". This type of question is called Recognition. 
 The FaceNet is not a classifier. It is just a model to extract the vector of features of an object. This is what we called "embedding" step. What to do with this feature is up to us.
