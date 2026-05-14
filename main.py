@@ -27,8 +27,8 @@ embeded_faces = embedder.embeddings(train_faces) # Extract features vector
 in_encoder = Normalizer(norm='l2') # 
 X = in_encoder.transform(embeded_faces) # normalize the feature vectors
 out_encoder = LabelEncoder()
-out_encoder.fit(train_labels) # encode the string to proper format for SVM
-Y = out_encoder.transform(train_labels)
+out_encoder.fit(train_labels) # learn the unique class and then assign them a numerical value to create mapping
+Y = out_encoder.transform(train_labels) # actually perform the conversion based on what it learn before
 
 # SVM model
 SVM_model = SVC(kernel='linear', probability=True)
@@ -52,8 +52,9 @@ while True:
             length = side_length // 6
             
             conf = int(float(box.conf[0]) * 100)
-            currentArray = np.array([x1, y1, x2, y2, conf])
-            Detections = np.vstack((Detections, currentArray))
+            if conf >= 50:
+                currentArray = np.array([x1, y1, x2, y2, conf])
+                Detections = np.vstack((Detections, currentArray))
             
     tracker_results = tracker.update(Detections)
     for tracker_result in tracker_results:
@@ -70,7 +71,7 @@ while True:
             sub_feat = embedder.embeddings([sub_image])
             sub_feat_norm = in_encoder.transform(sub_feat)
             preds = SVM_model.predict_proba(sub_feat_norm)
-            best_class_idx = np.argmax(preds)
+            best_class_idx = np.argmax(preds[0])
             probability = preds[0][best_class_idx] * 100
             name = out_encoder.inverse_transform([best_class_idx])[0]
             if(probability >= 60):
