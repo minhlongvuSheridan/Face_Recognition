@@ -57,6 +57,8 @@ while True:
                 Detections = np.vstack((Detections, currentArray))
             
     tracker_results = tracker.update(Detections)
+    to_embbeded_images = []
+    to_embbeded_metadata = []
     for tracker_result in tracker_results:
         x1, y1, x2, y2, id = map(int, tracker_result)
         # if negative then convert it to zero
@@ -68,9 +70,14 @@ while True:
             draw_label(img, x1, y1, f"{name}: {probability:.2f}",(65,255,0),(0,0,0)) 
         else:
             sub_image = img.copy()[y1:y2,x1:x2]
-            sub_feat = embedder.embeddings([sub_image])
-            sub_feat_norm = in_encoder.transform(sub_feat)
-            preds = SVM_model.predict_proba(sub_feat_norm)
+            to_embbeded_images.append(sub_image)
+            to_embbeded_metadata.append((x1, y1, x2, y2, id))
+    if len(to_embbeded_images) > 0:
+        embedded_images = embedder.embeddings(to_embbeded_images)
+        for i, embeded_image in enumerate(embedded_images): 
+            (x1, y1, x2, y2, id) = to_embbeded_metadata[i]
+            normalized_sub_feat = in_encoder.transform([embeded_image])
+            preds = SVM_model.predict_proba(normalized_sub_feat)
             best_class_idx = np.argmax(preds[0])
             probability = preds[0][best_class_idx] * 100
             name = out_encoder.inverse_transform([best_class_idx])[0]
