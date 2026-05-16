@@ -1,4 +1,8 @@
 # Introduction
+This is the project that mark my first step in AI field. If you look at several videos on *Face Recognition* on youtube, you will see that their speed is kind of slow. This is because the face recognition stage is inherently slow. For every new frame, they do the recognition right after the recognition. <br/>
+(add diagram of YOLO and Recognition here)
+For improvement, I add the tracking phase where we only need to the recognition stage very few times. If the model has high score of recognition for a face, that recognizied face will be tracked and won't go through the recognition again as long as it keep its ID. The result is really good with the improvement from 5 FPS up to 30 FPS almost all the time. It<br/> 
+(add diagram of YOLO,tracking and Recognition here)
 # Run scripts
 There are two files: **main.py** for face recognition with tracking and **facenet_no_sort.py** for face recognition without tracking.
 To run scripts, open your terminal and run those commands
