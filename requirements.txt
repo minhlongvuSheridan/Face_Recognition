@@ -1,0 +1,9 @@
+numpy
+opencv-python
+scikit-learn
+ultralytics
+keras-facenet
+filterpy
+scipy
+scikit-image
+matplotlib
