@@ -1,11 +1,11 @@
 # 1 What we have from YoLo and Computer Vision
 ## 4 Points
 The yolo return us two points. Top left and bottom right
-<img width="691" height="578" alt="image" src="https://github.com/user-attachments/assets/69b84e4e-bf6c-4f58-9de4-ecfa1d599a21" />
+<img width="500" height="400" alt="image" src="https://github.com/user-attachments/assets/69b84e4e-bf6c-4f58-9de4-ecfa1d599a21" />
 
 
 From those two points, we can actually calculate the top right and bottom left ourself
-<img width="817" height="607" alt="image" src="https://github.com/user-attachments/assets/9532d1f5-eaa3-4310-8826-3f8020e1172b" />
+<img width="500" height="400" alt="image" src="https://github.com/user-attachments/assets/9532d1f5-eaa3-4310-8826-3f8020e1172b" />
 
 ## Technique to draw
 All the operations are based on the image in the numpy array format. You can change any pixel as you like. This mean that, theoretically, you don't need to use any external function at
@@ -65,8 +65,37 @@ bottom_right_horizontal = (x2 - l, y2)
 When we have all the necessary points. Just use the ```python cv2.line()``` to draw all the lines. You might need to call it 8 times
 ## Draw the label
 
+Basically, we would like to display the label in an anime scifi style like this
+<img width="916" height="541" alt="image" src="https://github.com/user-attachments/assets/76fdf374-76b8-4c83-b2a1-ded90be95a18" />
+This is just one one illustration. The label must be relative to the positiion that it is in. Example if the face is in the right most of the image, the label must be displayed on the left not right like this
+<img width="810" height="719" alt="image" src="https://github.com/user-attachments/assets/e1fb5870-7b15-4287-981b-bb4377d08507" />
+
+### Position of the label rectangle
+First thing to determine the position of the label rectangle. We need to determine the two points of the connector and the one corner of the label rectangle. Lets call one end of connector connected to the face ***face_connect*** and the other end connected with label ***label_connect***. The bottom left of the label will be **bottom_left_label**. You might ask we do we need the bottom left one? This is the position of ***label_connect*** is not stable and we need a fixed position to put the text later. We actually calculate **bottom_left_label** from the ***label_connect***
+<img width="917" height="634" alt="image" src="https://github.com/user-attachments/assets/26be5087-0cdd-4a2e-873a-576d9cdb4271" />
+
+
+Our general idea is to compare the center of the face relative to the center of the image
+```python
+width = img.shape[0]
+height = img.shape[1]
+center = (width // 2, height // 2)
+```
+<img width="466" height="308" alt="image" src="https://github.com/user-attachments/assets/30d7f8dc-3a37-4aa4-806e-2384c497d87b" />
+
+Also find the center of the face 
+```python
+center_face = ((x1+x2)//2, (y1+y2)//2)
+```
+<img width="392" height="346" alt="image" src="https://github.com/user-attachments/assets/e3302763-4fab-46dc-860a-181208e2087e" />
+
+#### Case 1: Face is on the top right
+#### Case 2: Face is on the top right
+#### Case 3: Face is on the bottom right 
+### Case 4: Face is on the bottom left
 ### Blending images
-### 
+
+### Draw the text
 
 # 3 Drawing with neon effect
 Even though the code in the file is the mess up (it does have resonable rationale of optimizing). There is a clear pattern of doing the image.
