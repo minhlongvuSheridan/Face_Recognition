@@ -1,8 +1,20 @@
 # Introduction
 This is the project that mark my first step in AI field. If you look at several videos on *Face Recognition* on youtube, you will see that their speed is kind of slow. This is because the face recognition stage is inherently slow. For every new frame, they do the recognition right after the recognition. <br/>
-(add diagram of YOLO and Recognition here)
-For improvement, I add the tracking phase where we only need to the recognition stage very few times. If the model has high score of recognition for a face, that recognizied face will be tracked and won't go through the recognition again as long as it keep its ID. The result is really good with the improvement from 5 FPS up to 30 FPS almost all the time. It<br/> 
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/4c632540-57ff-4eef-a496-5fa1ce82b452" width="80%" />
+  <br>
+  <b>Figure 1. YOLO + (FaceNet + SVM)</b>
+</p>
+
+the question "Where is the face" is really cheap since YOLO could detect multiple faces with the same cost of around 30ms. However, the question "what does the question look like" is quite expensive since FaceNet has to run its complex neural network to extract the feature. Each face could take around 60ms. <br/>
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/f2a75998-15d5-4803-9b22-2734b0ed26a6" width="80%" />
+  <p>Figure 2. YOLO + SORT + (FaceNet + SVM)</p>
+</div>
+As an solution for that problem, I add the tracking phase where we will ask "Is this the same face" before going to recognition. This question of tracking is just as cheap as detection. If this the same face, it will bypass the recognition and display it directly
+If it is not, the model will perform recognition. If the model is confident in the result (highest probability and > 60), the face will be tracked and won't go through the recognition again as long as it keep its ID. The result is really good with the improvement from 5 FPS up to 30 FPS almost all the time. It<br/> 
 (add diagram of YOLO,tracking and Recognition here)
+
 # Run scripts
 There are two files: **main.py** for face recognition with tracking and **facenet_no_sort.py** for face recognition without tracking.
 To run scripts, open your terminal and run those commands
