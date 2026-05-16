@@ -1,9 +1,19 @@
+# Introduction
 # Run scripts
 There are two files: **main.py** for face recognition with tracking and **facenet_no_sort.py** for face recognition without tracking.
-To run scripts, open the Face_Recognition directory and type: <br/>
-```python ./main.py```
-or <br/>
-```python ./facenet_no_sort.py```
+To run scripts, open your terminal and run those commands
+```python
+# 1. Clone Face_Recognition repo
+git clone https://github.com/minhlongvuSheridan/Face_Recognition.git
+cd Face_Recognition
+
+# 2. Install all dependencies from requirements.txt
+pip install -r requirements.txt
+
+# 3. Run the Face_Recognittion app
+python main.py
+# If want to run no tracking: python facenet_no_sort.py
+```
 # Demo
 
 <table>
@@ -20,8 +30,9 @@ or <br/>
 </table>
 With basic tracking, the FPS is improved from below 5 all the time to around 25 most the time
 
-# Dependencies
-
+# GPU notes
+If you only run it on CPU, it might be extremely slow. Both my demo run on the GPU. Ensure that you already installed **CUDA Toolkit** and **cuDNN**. <br/>
+If you don't know how, please watch at *1:09:02* to this tutorial **https://www.youtube.com/watch?v=WgPbbWmnXJ8&t=11529s**. He will guide you how to do it
 
 # Customize the identity 
 If you want to add new identity, create a new folder with the target's name in the identity folder. 
