@@ -1,5 +1,16 @@
 <h1 align="center">🕵️‍♂️Face Recognition with YOLO, SORT, and FaceNet+SVM🕵️‍♂️</h1>
 
+# Tech Used🛠️
+<p align="left">
+  <img src="https://img.shields.io/badge/OpenCV-111d27?style=for-the-badge&logo=opencv&logoColor=white" />
+  <img src="https://img.shields.io/badge/Python-111d27?style=for-the-badge&logo=python&logoColor=3776AB" />
+  <img src="https://img.shields.io/badge/scikit--learn-111d27?style=for-the-badge&logo=scikitlearn&logoColor=F7931E" />
+  <img src="https://img.shields.io/badge/YOLOv8-111d27?style=for-the-badge&logo=ultralytics&logoColor=8A2BE2" />
+  <img src="https://img.shields.io/badge/YOLOv8-111d27?style=for-the-badge&logo=ultralytics&logoColor=8A2BE2" />
+  <img src="https://img.shields.io/badge/FaceNet-111d27?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/SVM-111d27?style=for-the-badge" />
+</p>
+
 # Description📝
 This is the project that mark my first step in AI field. If you look at several videos on *Face Recognition* on youtube, you will see that their speed is kind of slow. This is because the face recognition stage is inherently slow.  <br/>
 <p align="center">
