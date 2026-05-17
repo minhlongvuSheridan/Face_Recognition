@@ -1,12 +1,12 @@
 # Introduction
-This is the project that mark my first step in AI field. If you look at several videos on *Face Recognition* on youtube, you will see that their speed is kind of slow. This is because the face recognition stage is inherently slow. For every new frame, they do the recognition right after the recognition. <br/>
+This is the project that mark my first step in AI field. If you look at several videos on *Face Recognition* on youtube, you will see that their speed is kind of slow. This is because the face recognition stage is inherently slow.  <br/>
 <p align="center">
   <img src="https://github.com/user-attachments/assets/4c632540-57ff-4eef-a496-5fa1ce82b452" width="80%" />
   <br>
   <b>Figure 1. YOLO + (FaceNet + SVM)</b>
 </p>
 
-the question "Where is the face" is really cheap since YOLO could detect multiple faces with the same cost of around 30ms. However, the question "what does the question look like" is quite expensive since FaceNet has to run its complex neural network to extract the feature. Each face could take around 60ms. <br/>
+The question "Where is the face" is really cheap since YOLO could detect multiple faces with the same cost of around 30ms. However, the question "what does the question look like" is quite expensive since FaceNet has to run its complex neural network to extract the feature. Each face could take around 60ms. For every new frame, the usual tutorials do the recognition right after the recognition.  <br/>
 <div align="center">
   <img src="https://github.com/user-attachments/assets/f2a75998-15d5-4803-9b22-2734b0ed26a6" width="80%" />
   <p>Figure 2. YOLO + SORT + (FaceNet + SVM)</p>
