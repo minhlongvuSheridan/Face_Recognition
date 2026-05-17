@@ -28,6 +28,45 @@ affected.
 # Detection: YoLo
 The job of YOLO detection is to answer the question "Where is the face". <br/>
 The YoLo is an deep learning model for object detection so it can not automatically process the image. Thus, we need to use OpenCv for computer vision task to feed the image to it.
+- Step 0: We need to add some constants to be used in drawing labels
+  ```python
+  WHITE = (255,255,255) 
+  GREY = (128, 128, 128) # Medium Grey for background
+  LIGHT_GREEN =  (150, 255, 150) # lighter is closer to white so it is INNER
+  MEDIUM_GREEN = (0, 200, 0) # outer
+  # ---
+  TEXT_STRENGTH = 1
+  TEXT_SIZE = 0.6
+  TEXT_THICK = 1
+  BORDER_STRENGTH = 1
+  BORDER_THICK = 1 
+  names_information = {
+    "Minh Long Vu":{
+        "job": "Student",
+        "country": "Canada"
+    },
+    "Barack Obama":{
+        "job": "Former US President",
+    "country": "United States"
+    },
+    "Donal Trump":{
+        "job": "US President",
+    "country": "United States"
+    },
+    "Elon Musk":{
+        "job": "Owner of SpaceX",
+        "country": "United States"
+    },
+    "ishowspeed":{
+        "job": "Streamer",
+    "country": "United States"
+    },
+    "Stephen Chow":{
+        "job": "Actor",
+        "country": "China"
+    }
+  }
+  ```
 - Step 1: We open the camera of laptop.
   ```python
   lap_camera = cv2.VideoCapture(0)
@@ -64,8 +103,14 @@ The YoLo is an deep learning model for object detection so it can not automatica
   ```python
   side_length = x2 - x1
   length = side_length // 6
-  draw_corners(img, x1,y1,x2,y2,length,2)
-  draw_label(img, x1, y1, f"Face: {conf}",(65,255,0),(0,0,0)) 
+  name_info["name"] = "Minh Long"
+  name_info["job"] = names_information[name]["job"]
+  name_info["country"] = names_information[name]["country"]
+  draw_neon_corners(img, x1, y1, x2, y2,
+                    LIGHT_GREEN, MEDIUM_GREEN, BORDER_STRENGTH, length, BORDER_THICK)    
+  draw_neon_label(img, x1, y1, x2, y2, name_info, 
+                  LIGHT_GREEN, MEDIUM_GREEN,TEXT_STRENGTH, TEXT_SIZE,
+                GREY, LIGHT_GREEN, MEDIUM_GREEN, BORDER_STRENGTH,BORDER_THICK) 
   ```
   *draw_label* and *draw_corners* are from the *draw_box.py*
 The complete code for detection 
@@ -73,7 +118,9 @@ The complete code for detection
 import cv2
 from ultralytics import YOLO
 from draw_box import *
-
+"""
+Add your step 0 here
+"""
 model = YOLO("./detection.pt") 
 lap_camera = cv2.VideoCapture(0)
 
@@ -86,8 +133,14 @@ while True:
             conf = int(float(box.conf[0]) * 100)
             side_length = x2 - x1
             length = side_length // 6
-            draw_corners(img, x1,y1,x2,y2,length,2)
-            draw_label(img, x1, y1, f"Face: {conf}",(65,255,0),(0,0,0)) 
+            name_info["name"] = "Minh Long"
+            name_info["job"] = names_information[name]["job"]
+            name_info["country"] = names_information[name]["country"]
+            draw_neon_corners(img, x1, y1, x2, y2,
+                            LIGHT_GREEN, MEDIUM_GREEN, BORDER_STRENGTH, length, BORDER_THICK)    
+            draw_neon_label(img, x1, y1, x2, y2, name_info, 
+                            LIGHT_GREEN, MEDIUM_GREEN,TEXT_STRENGTH, TEXT_SIZE,
+                            GREY, LIGHT_GREEN, MEDIUM_GREEN, BORDER_STRENGTH,BORDER_THICK)
     cv2.imshow("Image", img)
     cv2.waitKey(1)
 ```
@@ -132,8 +185,14 @@ This id is what we use to track the object. Each tracker result is an id
         x1, y1, x2, y2 = [max(0, i) for i in (x1, y1, x2, y2)]
         side_length = x2 - x1
         length = side_length // 6
-        draw_label(img, x1, y1, f"Face: {id}",(65,255,0),(0,0,0)) 
-        draw_corners(img, x1,y1,x2,y2,length,2)
+        name_info["name"] = "Minh Long"
+        name_info["job"] = names_information[name]["job"]
+        name_info["country"] = names_information[name]["country"]
+        draw_neon_corners(img, x1, y1, x2, y2,
+                            LIGHT_GREEN, MEDIUM_GREEN, BORDER_STRENGTH, length, BORDER_THICK)    
+        draw_neon_label(img, x1, y1, x2, y2, name_info, 
+                            LIGHT_GREEN, MEDIUM_GREEN,TEXT_STRENGTH, TEXT_SIZE,
+                            GREY, LIGHT_GREEN, MEDIUM_GREEN, BORDER_STRENGTH,BORDER_THICK)
   ```
 Complete code for YOLO+ Tracking
 ```python
@@ -142,7 +201,9 @@ from ultralytics import YOLO
 
 from draw_box import *
 from sort import *
-
+"""
+Add your step 0 here
+"""
 model = YOLO("./detection.pt") 
 
 tracker = Sort(max_age = 20, min_hits = 3,iou_threshold=0.3)
@@ -173,8 +234,15 @@ while True:
         x1, y1, x2, y2 = [max(0, i) for i in (x1, y1, x2, y2)]
         side_length = x2 - x1
         length = side_length // 6
-        draw_label(img, x1, y1, f"Face: {id}",(65,255,0),(0,0,0)) 
-        draw_corners(img, x1,y1,x2,y2,length,2)
+        name_info= dict()
+        name_info["name"] = "Minh Long"
+        name_info["job"] = names_information[name]["job"]
+        name_info["country"] = names_information[name]["country"]
+        draw_neon_corners(img, x1, y1, x2, y2,
+                            LIGHT_GREEN, MEDIUM_GREEN, BORDER_STRENGTH, length, BORDER_THICK)    
+        draw_neon_label(img, x1, y1, x2, y2, name_info, 
+                            LIGHT_GREEN, MEDIUM_GREEN,TEXT_STRENGTH, TEXT_SIZE,
+                            GREY, LIGHT_GREEN, MEDIUM_GREEN, BORDER_STRENGTH,BORDER_THICK)
     cv2.imshow("Image", img)
     cv2.waitKey(1)
 ```
@@ -194,20 +262,18 @@ embedder = FaceNet()
 - Step 2: Make a seperate file called *load_data.py* and make a load data function
   ```python
   import cv2
-from os import listdir
-
-def load_dataset_faces(directory):
+  from os import listdir
+  def load_dataset_faces(directory):
     faces = list()
     names = list()
-    for filename in listdir(directory):
-        
+    for filename in listdir(directory):    
         path = directory + '\\'+ filename
         name = filename
         for img in listdir(path):
             face = cv2.imread(path + '\\' + img)
             faces.append(face)
             names.append(name)
-    return faces, names
+      return faces, names
   ```
   this will return the images and together with their respective name
 - Step 3: Back to our main python file. Add the path and then input it to load_dataset_faces
@@ -241,40 +307,25 @@ The *fit* function will learn from our target classes and then create a mapping 
   SVM_model = SVC(kernel='linear', probability=True)
   SVM_model.fit(X, Y)
   ```
-- Step 8: For each tracking result, we consider if the id is in our *track_dict* or not
-  - 8.1: the id is not in *track_dict*:
-    - 8.1.1: We cut the object out of the image by using bounding box
-      ```
+- Step 8: Create a array to store the embbeded images and metadata<br/>
+  Add this right below **tracker_results = tracker.update(Detections)**
+  ```python
+  to_embbeded_images = []
+  to_embbeded_metadata = []
+  ```
+  This helps us in doing recognition only one time for each frame.
+- Step 9: For each tracking result, we consider if the id is in our *track_dict* or not
+  - 9.1: the id is not in *track_dict*:
+    - 9.1.1: We cut the object out of the image by using bounding box
+      ```python
       sub_image = img.copy()[y1:y2,x1:x2]
       ```
-    - 8.1.2: Extract the features vector and then normalize it
+    - 9.1.2: Add the images and metadata to the arries<br/>
       ```python
-      sub_feat = embedder.embeddings([sub_image])
-      sub_feat_norm = in_encoder.transform(sub_feat)
-      ```
-    - 8.1.3: Using SVM to calculate the actual probabilties of each class
-      ```python
-      preds = SVM_model.predict_proba(sub_feat_norm)
-      ```
-      the return preds is *(n_samples, n_classes)*. This is like a 2 dimensions array where first dimension row is the number of samples or objects and second is the the probabilties of each class. Since we only feed an object so we only need to access preds[0]
-    - 8.1.4: Get the index of maximum value of array
-      ```
-      best_class_idx = np.argmax(preds[0)
-      ```
-      Remember that the index is order based on the LabelEncoder integer. Thus the index is actually the label we need 
-    - 8.1.5: Since the index is also the label, we only need to convert it back 
-      ```
-      name = out_encoder.inverse_transform([best_class_idx])[0]
-      ```
-      *inverse_transform* expect an arrray and return an array. We only have element so just acces to the first element in returned array
-    - 8.1.6: Check if the probability is more than 60, we than add the id in *track_dict* and then draw it
-      ```
-      if(probability >= 60):
-                track_dict[id] = [name, probability]
-                draw_corners(img, x1,y1,x2,y2,length,2)
-                draw_label(img, x1, y1, f"{name}: {probability:.2f}",(65,255,0),(0,0,0))
-      ```
-  - 8.2: the id is in the *track_dict*. We simply need to get name and probability and draw it
+      to_embbeded_images.append(sub_image)
+      to_embbeded_metadata.append((x1, y1, x2, y2, id))
+      ```  
+  - 9.2: the id is in the *track_dict*. We simply need to get name and probability and draw it
     ```python
     name = track_dict.get(id)[0]
             probability = track_dict.get(id)[1]
@@ -284,25 +335,63 @@ The *fit* function will learn from our target classes and then create a mapping 
   Add the complete code for step 8 right below *x1, y1, x2, y2 = [max(0, i) for i in (x1, y1, x2, y2)]*
   ```python
   if id in track_dict:
-    name = track_dict.get(id)[0]
-    probability = track_dict.get(id)[1]
-    draw_corners(img, x1,y1,x2,y2,length,2)
-    draw_label(img, x1, y1, f"{name}: {probability:.2f}",(65,255,0),(0,0,0)) 
-  else:
-    sub_image = img.copy()[y1:y2,x1:x2]
-    sub_feat = embedder.embeddings([sub_image])
-    sub_feat_norm = in_encoder.transform(sub_feat)
-    preds = SVM_model.predict_proba(sub_feat_norm)
-    best_class_idx = np.argmax(preds[0])
-    probability = preds[0][best_class_idx] * 100
-    name = out_encoder.inverse_transform([best_class_idx])[0]
-    if(probability >= 60):
-        track_dict[id] = [name, probability]
-        draw_corners(img, x1,y1,x2,y2,length,2)
-        draw_label(img, x1, y1, f"{name}: {probability:.2f}",(65,255,0),(0,0,0))
+            name = track_dict.get(id)[0]
+            name_info= dict()
+            name_info["name"] = name
+            name_info["job"] = names_information[name]["job"]
+            name_info["country"] = names_information[name]["country"]
+            draw_neon_corners(img, x1, y1, x2, y2,
+                            LIGHT_GREEN, MEDIUM_GREEN, BORDER_STRENGTH, length, BORDER_THICK)
+            
+            draw_neon_label(img, x1, y1, x2, y2, name_info, 
+                            LIGHT_GREEN, MEDIUM_GREEN,TEXT_STRENGTH, TEXT_SIZE,
+                            GREY, LIGHT_GREEN, MEDIUM_GREEN, BORDER_STRENGTH,BORDER_THICK)
+        else:
+            sub_image = img.copy()[y1:y2,x1:x2]
+            to_embbeded_images.append(sub_image)
+            to_embbeded_metadata.append((x1, y1, x2, y2, id))
   ```
-<br/>
-Complete code for whole application
+- Step 10: Do the recognition of the embeded images is not empty
+  Add this outside the tracker for loop
+  ```python
+  if len(to_embbeded_images) > 0:
+        embedded_images = embedder.embeddings(to_embbeded_images)
+  ```
+- Step 11: For each embedding, normalize it and get its postion:
+  ```python
+  for i, embeded_image in enumerate(embedded_images):
+    x1, y1, x2, y2, id) = to_embbeded_metadata[i]
+    normalized_sub_feat = in_encoder.transform([embeded_image])
+  ```
+- Step 12: Using SVM to calculate the actual probabilties of each class
+  ```python
+  preds = SVM_model.predict_proba(normalized_sub_feat)
+  ```
+  the return preds is *(n_samples, n_classes)*. This is like a 2 dimensions array where first dimension row is the number of samples or objects and second is the the probabilties of each class. Since we only feed an object so we only need to access preds[0]
+- Step 13: Get the index maximum and convert it back to the name
+  ```python
+  best_class_idx = np.argmax(preds[0])
+  name = out_encoder.inverse_transform([best_class_idx])[0]
+  ```
+  Remember that the index is order based on the LabelEncoder integer. Thus the index is actually the label we need and we only need to simply convert it back. Note that *inverse_transform* expect an arrray and return an array. We only have element so just acces to the first element in returned array
+- Step 14: Check if the probability is more than 60, we than add the id in *track_dict* and then draw it
+  ```python
+  probability = preds[0][best_class_idx] * 100
+  if(probability >= 60):
+                track_dict[id] = [name, probability]
+                name_info= dict()
+                name_info["name"] = name
+                print(name)
+                name_info["job"] = names_information[name]["job"]
+                name_info["country"] = names_information[name]["country"]
+                draw_neon_corners(img, x1, y1, x2, y2,
+                                  LIGHT_GREEN, MEDIUM_GREEN, BORDER_STRENGTH, length, BORDER_THICK)
+                draw_neon_label(img, x1, y1, x2, y2, name_info, 
+                                LIGHT_GREEN, MEDIUM_GREEN,TEXT_STRENGTH, TEXT_SIZE,
+                                GREY, LIGHT_GREEN, MEDIUM_GREEN, BORDER_STRENGTH,BORDER_THICK)
+  ```
+
+Complete code for the application
 
 ```python
 import cv2
@@ -315,6 +404,46 @@ from sort import *
 from load_data import *
 import time
 
+WHITE = (255,255,255) 
+GREY = (128, 128, 128) # Medium Grey for background
+LIGHT_GREEN =  (150, 255, 150) # lighter is closer to white so it is INNER
+MEDIUM_GREEN = (0, 200, 0) # outer
+
+
+
+# ---
+TEXT_STRENGTH = 1
+TEXT_SIZE = 0.6
+TEXT_THICK = 1
+BORDER_STRENGTH = 1
+BORDER_THICK = 1
+
+names_information = {
+    "Minh Long Vu":{
+        "job": "Student",
+        "country": "Canada"
+    },
+    "Barack Obama":{
+        "job": "Former US President",
+    "country": "United States"
+    },
+    "Donal Trump":{
+        "job": "US President",
+    "country": "United States"
+    },
+    "Elon Musk":{
+        "job": "Owner of SpaceX",
+        "country": "United States"
+    },
+    "ishowspeed":{
+        "job": "Streamer",
+    "country": "United States"
+    },
+    "Stephen Chow":{
+        "job": "Actor",
+        "country": "China"
+    }
+}
 
 
 # YOLO model
@@ -327,7 +456,7 @@ track_dict = dict()
 # FaceNet
 embedder = FaceNet()
 # the path to the images for recognition
-dir_path = r'C:\Users\haivu\OneDrive - Sheridan College\Desktop\computer\Project\Face_Recognition\identity'
+dir_path = r'./identity'
 train_faces, train_labels = load_dataset_faces(dir_path)
 embeded_faces = list()
 embeded_faces = embedder.embeddings(train_faces) # Extract features vector
@@ -364,35 +493,54 @@ while True:
                 Detections = np.vstack((Detections, currentArray))
             
     tracker_results = tracker.update(Detections)
+    to_embbeded_images = []
+    to_embbeded_metadata = []
     for tracker_result in tracker_results:
         x1, y1, x2, y2, id = map(int, tracker_result)
         # if negative then convert it to zero
         x1, y1, x2, y2 = [max(0, i) for i in (x1, y1, x2, y2)]
         if id in track_dict:
             name = track_dict.get(id)[0]
-            probability = track_dict.get(id)[1]
-            draw_corners(img, x1,y1,x2,y2,length,2)
-            draw_label(img, x1, y1, f"{name}: {probability:.2f}",(65,255,0),(0,0,0)) 
+            name_info= dict()
+            name_info["name"] = name
+            name_info["job"] = names_information[name]["job"]
+            name_info["country"] = names_information[name]["country"]
+            draw_neon_corners(img, x1, y1, x2, y2,
+                            LIGHT_GREEN, MEDIUM_GREEN, BORDER_STRENGTH, length, BORDER_THICK)
+            
+            draw_neon_label(img, x1, y1, x2, y2, name_info, 
+                            LIGHT_GREEN, MEDIUM_GREEN,TEXT_STRENGTH, TEXT_SIZE,
+                            GREY, LIGHT_GREEN, MEDIUM_GREEN, BORDER_STRENGTH,BORDER_THICK)
         else:
             sub_image = img.copy()[y1:y2,x1:x2]
-            sub_feat = embedder.embeddings([sub_image])
-            sub_feat_norm = in_encoder.transform(sub_feat)
-            preds = SVM_model.predict_proba(sub_feat_norm)
+            to_embbeded_images.append(sub_image)
+            to_embbeded_metadata.append((x1, y1, x2, y2, id))
+    if len(to_embbeded_images) > 0:
+        embedded_images = embedder.embeddings(to_embbeded_images)
+        for i, embeded_image in enumerate(embedded_images): 
+            (x1, y1, x2, y2, id) = to_embbeded_metadata[i]
+            normalized_sub_feat = in_encoder.transform([embeded_image])
+            preds = SVM_model.predict_proba(normalized_sub_feat)
             best_class_idx = np.argmax(preds[0])
             probability = preds[0][best_class_idx] * 100
             name = out_encoder.inverse_transform([best_class_idx])[0]
             if(probability >= 60):
                 track_dict[id] = [name, probability]
-                draw_corners(img, x1,y1,x2,y2,length,2)
-                draw_label(img, x1, y1, f"{name}: {probability:.2f}",(65,255,0),(0,0,0))
+                name_info= dict()
+                name_info["name"] = name
+                print(name)
+                name_info["job"] = names_information[name]["job"]
+                name_info["country"] = names_information[name]["country"]
+                draw_neon_corners(img, x1, y1, x2, y2,
+                                  LIGHT_GREEN, MEDIUM_GREEN, BORDER_STRENGTH, length, BORDER_THICK)
+                draw_neon_label(img, x1, y1, x2, y2, name_info, 
+                                LIGHT_GREEN, MEDIUM_GREEN,TEXT_STRENGTH, TEXT_SIZE,
+                                GREY, LIGHT_GREEN, MEDIUM_GREEN, BORDER_STRENGTH,BORDER_THICK)
     
     end_time = time.time()
     elapsed_time = end_time - start_time  
-    cv2.putText(img, f"{1 // elapsed_time} FPS",(50,50), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (1, 50, 32), 1)      
+    cv2.putText(img, f"{1 // elapsed_time} FPS",(20,20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (1, 50, 32), 1)      
     cv2.imshow("Image", img)
     cv2.waitKey(1)
     
 ```
-
-
-
