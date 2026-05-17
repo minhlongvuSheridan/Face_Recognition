@@ -6,9 +6,10 @@
   <img src="https://img.shields.io/badge/Python-111d27?style=for-the-badge&logo=python&logoColor=3776AB" />
   <img src="https://img.shields.io/badge/scikit--learn-111d27?style=for-the-badge&logo=scikitlearn&logoColor=F7931E" />
   <img src="https://img.shields.io/badge/YOLOv8-111d27?style=for-the-badge&logo=ultralytics&logoColor=8A2BE2" />
-  <img src="https://img.shields.io/badge/YOLOv8-111d27?style=for-the-badge&logo=ultralytics&logoColor=8A2BE2" />
+  <img src="https://img.shields.io/badge/SORT-0d1117?style=for-the-badge&logo=generic&logoColor=white" />
   <img src="https://img.shields.io/badge/FaceNet-111d27?style=for-the-badge" />
   <img src="https://img.shields.io/badge/SVM-111d27?style=for-the-badge" />
+  
 </p>
 
 # Description📝
