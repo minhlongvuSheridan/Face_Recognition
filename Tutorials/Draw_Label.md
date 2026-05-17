@@ -1,32 +1,37 @@
 # 1 What we have from YoLo and Computer Vision
-## 4 Points
-The yolo return us two points. Top left and bottom right <br/>
+## 4 Points of detected faces
+The YOLO model returns two points to us: top-left and bottom-right. <br/>
 <img width="500" height="400" alt="image" src="https://github.com/user-attachments/assets/69b84e4e-bf6c-4f58-9de4-ecfa1d599a21" />
 
 
-From those two points, we can actually calculate the top right and bottom left ourself<br/>
+From those two points, we can actually calculate the top-right and bottom-left points ourselves.<br/>
 <img width="500" height="400" alt="image" src="https://github.com/user-attachments/assets/9532d1f5-eaa3-4310-8826-3f8020e1172b" />
 
 ## Technique to draw
-All the operations are based on the image in the numpy array format. You can change any pixel as you like. This mean that, theoretically, you don't need to use any external function at
-all and you could draw whatever you like. This is important note to remember since we might use some drawing that is not supported by any lirary<br/>
+All operations are based on the image in NumPy array format. You can change any pixel as you like. This means that, theoretically, you don't need to use any external functions at all and you could draw whatever you like. This is an important note to remember since we might use some custom drawing styles that are not supported by any standard library.<br/>
 In this project we use ***OpenCv*** to help us draw some basic shapes. Here are some functions we will use: 
-- Draw a line: ```python cv2.line(image, start_point, stop_point, line_color, line_thickness)``` <br/>
+- Draw a line:<br/>
+   ```python cv2.line(image, start_point, stop_point, line_color, line_thickness)``` <br/>
   Draw a short line from *start_point* to *stop_point* with specified color and thickness
-- Draw a rectangle: ```python cv2.rectangle(image, start_point, stop_point, rec_color, rec_thickness)``` <br/>
+- Draw a rectangle:<br/>
+  ```python cv2.rectangle(image, start_point, stop_point, rec_color, rec_thickness)``` <br/>
   Draw a rectangle from top left point start_point to bottom left stop_point with specified color. If the rec_thickness > 0, then it draw the perimeter. If the rec_thickness = -1, it
   fill the whole rectangle.
-- Write the text: ```python cv2.putText(image, text, bottom_left_start, font_type,font_scale, color, thickness)```
+- Write the text:<br/>
+  ```python cv2.putText(image, text, bottom_left_start, font_type,font_scale, color, thickness)```<br/>
   Write the text with Font font_type and size font_scale. The start position is bottom left bottom_left_start
-- Blend(combine the image) the image: ```python cv2.addWeighted(src_img1,alpha, src_img2, beta, gamma, dest_img)```
+- Blend(combine the image) the image: <br/>
+  ```python cv2.addWeighted(src_img1,alpha, src_img2, beta, gamma, dest_img)```<br/>
   Basically this use the formula *dest_img = src_img1 * alpha + src_img2 * beta + gamma*. The larger the coefficient, the more clearer of the image. This is the
   main technique used to create transparent rectangle. The rectangle must have alpha larger than 0.5 and the other has 1 - alpha so that it create an effect where
   the rectangle is on top of origional image. If you want to apply a mask where only relevant image is keep, background is ignore than the src_img1 must be in (0,0,0) except the
   content and beta must be 1 (1 means keep the same where the mask doesn't reach)
-- Blur the image: ```python cv2.(src_img, kernel_size,sigmaX )```
+- Blur the image:<br/>
+  ```python cv2.(src_img, kernel_size,sigmaX )```<br/>
   This is main technique to create the neon effect. Kernel is in the format (x,y) where x and y is the width and height of the matrix, respectively. Basically each pixel will be the average of thix matrix. sigMax is the standard
   deviation of axis X. It messaure the spread. Usually specified as 0 means let the function automatically apply
-- Get the width and height of text size: ```python cv2.getTextSize(	text, fontFace, fontScale, thickness)```
+- Get the width and height of text size:<br/>
+  ```python cv2.getTextSize(	text, fontFace, fontScale, thickness)```<br/>
   Get the height and width of the text based on the content, font type, size and thickness. It return three parameters (width,heigh), baseline. We only interested in the first tuple
   (width, height) 
   
@@ -68,13 +73,15 @@ bottom_right_horizontal = (x2 - l, y2)
 When we have all the necessary points. Just use the ```python cv2.line()``` to draw all the lines. You might need to call it 8 times
 ## Draw the label
 
-Basically, we would like to display the label in an anime scifi style like this
+Basically, we would like to display the label in an anime sci-fi style like this:
 <img width="916" height="541" alt="image" src="https://github.com/user-attachments/assets/76fdf374-76b8-4c83-b2a1-ded90be95a18" />
-This is just one one illustration. The label must be relative to the positiion that it is in. Example if the face is in the right most of the image, the label must be displayed on the left not right like this
+This is just one illustration. The label position must be relative to the position of the face. For example, if the face is on the far-right side of the image, the label must be displayed on the left, not on the right like this:<br/>
 <img width="810" height="719" alt="image" src="https://github.com/user-attachments/assets/e1fb5870-7b15-4287-981b-bb4377d08507" />
 
 ### Position of the label rectangle
-First thing to determine the position of the label rectangle. We need to determine the two points of the connector and the one corner of the label rectangle. Lets call one end of connector connected to the face ***face_connect*** and the other end connected with label ***label_connect***. The bottom left of the label will be **bottom_left_label**. You might ask we do we need the bottom left one? This is the position of ***label_connect*** is not stable and we need a fixed position to put the text later. We actually calculate **bottom_left_label** from the ***label_connect***. We would like the slope of the connector line to be 45 degrees.
+The first thing to do is determine the position of the label rectangle. We need to determine the two points of the connector line and one corner of the label rectangle. Let's call the end of the connector attached to the face bounding box ***face_connect***, and the other end attached to the label ***label_connect***. The bottom-left corner of the label will be ***bottom_left_label***. <br/>
+
+You might ask: why do we need the bottom-left one specifically? This is because the position of ***label_connect*** shifts dynamically, and we need a fixed reference point to place our text later. We calculate ***bottom_left_label*** directly from ***label_connect***. We want the slope of the connector line to be exactly 45 degrees.
 <img width="917" height="634" alt="image" src="https://github.com/user-attachments/assets/26be5087-0cdd-4a2e-873a-576d9cdb4271" />
 
 
@@ -96,8 +103,8 @@ center_face = ((x1+x2)//2, (y1+y2)//2)
 <img width="732" height="598" alt="image" src="https://github.com/user-attachments/assets/ad6556b4-65fb-4b2d-950a-dc9c61a79c4c" />
 
 ```python
-face_connect = (x1,y2)
-label_connect = (face_connect[0] - delta_x, face_connect[1] + delta_y)
+******face_connect****** = (x1,y2)
+label_connect = (******face_connect******[0] - delta_x, ******face_connect******[1] + delta_y)
 bottom_left_label = (label_connect[0] - rect_width, label_connect[1] + rect_height)
 ```
 
@@ -105,24 +112,24 @@ bottom_left_label = (label_connect[0] - rect_width, label_connect[1] + rect_heig
 <img width="673" height="587" alt="image" src="https://github.com/user-attachments/assets/643f5a6f-9476-47b5-8896-027d886f9bec" />
 
 ```python
-face_connect = (x2, y2)
-label_connect = (face_connect[0] + delta_x, face_connect[1] + delta_y)
+******face_connect****** = (x2, y2)
+label_connect = (******face_connect******[0] + delta_x, ******face_connect******[1] + delta_y)
 bottom_left_label = (label_connect[0], label_connect[1] + rect_height)
 ```
 #### Case 3: Face is on the bottom right 
 <img width="716" height="615" alt="image" src="https://github.com/user-attachments/assets/4d5cc5c4-54da-4893-b482-72e234d0f4be" /><br/>
 
 ```python
-face_connect = (x1,y1)
-label_connect = (face_connect[0] - delta_x, face_connect[1] - delta_y)
+******face_connect****** = (x1,y1)
+label_connect = (******face_connect******[0] - delta_x, ******face_connect******[1] - delta_y)
 bottom_left_label = (label_connect[0] - rect_width,label_connect[1])
 ```
 ### Case 4: Face is on the bottom left
 <img width="678" height="616" alt="image" src="https://github.com/user-attachments/assets/a47c51af-ea3b-481f-b168-3404558dd177" /> <br/>
 
 ```python
-face_connect = (x2,y1)
-label_connect = (face_connect[0] + delta_x, face_connect[1] - delta_y)
+******face_connect****** = (x2,y1)
+label_connect = (******face_connect******[0] + delta_x, ******face_connect******[1] - delta_y)
 bottom_left_label = label_connect
 ```
 
@@ -186,7 +193,7 @@ cv2.rectangle(image, label_top_left,  label_bottom_right, border_color, border_t
 # 3 Gaussian Blur: Drawing with neon effect
 We are now done with label things. But it looks somewhat boring now. We want more than that. We want the text look like as if it was from the actual monitor light <br/>
 <img width="176" height="90" alt="image" src="https://github.com/user-attachments/assets/b5652892-e419-4df3-8684-f5e7ae5a3586" /> <br/>
-The technique used to create such that Neon Effect is mainly Gaussian Blur. The general idea is to blur the thicker image to create a fealing of spreading light center around a light source text. The thicker part is called outer glow where it has darker color to represent distance from light source. The centered text is called inner glow that has lighter color to represent the light source. In some situation, we can even let the inner glow to be white to represent really strong light source. <br/>
+The technique used to create such that Neon Effect is mainly Gaussian Blur. The general idea is to blur the thicker image to create a fealing of spreading light center around a thinner light source text. The thicker part is called outer glow where it has darker color to represent distance from light source. The centered text is called inner glow that has lighter color to represent the light source. In some situation, we can even let the inner glow to be white to represent really strong light source. <br/>
 - Step 1 Generally we create new dark mask. It is dark so the area that is not related to the neon effect won't affect the origional image. (0,0,0) cancel out its coefficient  <br/>
   ```python
   mask_neon = image.copy()
