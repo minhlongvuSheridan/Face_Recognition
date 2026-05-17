@@ -77,5 +77,7 @@ If you intend to train better YOLO model, generally there are four steps:
 - Step 2: Add images to *images* and labels to *labels* folders
 - Step 3: Run the script *split_data.py* to split the data
 - Step 4: Run  ```yolo task=detect mode=train model=yolov8l.yaml data=/content/drive/MyDrive/Data/FaceRecognition/data/config.yaml epochs=100``` <br/>
+  Remember to replace *data* with your own *data* path
+
 I have written a detailed step-by-step guidance of how to do this in *Tutorials*, feel free to read it
 
