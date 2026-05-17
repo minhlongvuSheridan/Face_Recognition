@@ -1,4 +1,4 @@
-<h1 align="center">🕵️‍♂️Face Recognition with YOLO, SORT, and FaceNet+SVM🕵️‍♂️</h1>
+<h1 align="center">🕵️‍♂️Face Recognition with YOLO, SORT, and FaceNet🕵️‍♂️</h1>
 
 # Tech Used🛠️
 <p align="left">
