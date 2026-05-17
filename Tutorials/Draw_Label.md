@@ -183,8 +183,29 @@ cv2.putText(image,Text_1, text_1_start_point ,style_text, text_size ,text_color,
 cv2.putText(image,Text_2, text_2_start_point ,style_text, text_size ,text_color, text_thickness)
 cv2.rectangle(image, label_top_left,  label_bottom_right, border_color, border_thickness)
 ```
-# 3 Drawing with neon effect
+# 3 Gaussian Blur: Drawing with neon effect
 We are now done with label things. But it looks somewhat boring now. We want more than that. We want the text look like as if it was from the actual monitor light <br/>
-
-
-Even though the code in the file is the mess up (it does have resonable rationale of optimizing). There is a clear pattern of doing the image.
+<img width="176" height="90" alt="image" src="https://github.com/user-attachments/assets/b5652892-e419-4df3-8684-f5e7ae5a3586" /> <br/>
+The technique used to create such that Neon Effect is mainly Gaussian Blur. The general idea is to blur the thicker image to create a fealing of spreading light center around a light source text. The thicker part is called outer glow where it has darker color to represent distance from light source. The centered text is called inner glow that has lighter color to represent the light source. In some situation, we can even let the inner glow to be white to represent really strong light source. <br/>
+- Step 1 Generally we create new dark mask. It is dark so the area that is not related to the neon effect won't affect the origional image. (0,0,0) cancel out its coefficient  <br/>
+  ```python
+  mask_neon = image.copy()
+  mask_neon[:] = (0,0,0)
+  ```
+- Step 2 Run a for loop to draw the blurred texts. The idea is to draw the thickest first until thinnest text. Number of iterations depend on the strength of neon effect you want. 
+  ```python
+  for i in range(text_thick + text_strength, 1, -1):
+    cv2.putText(mask_neon,Text, text_start,style_text, text_size ,outer_text_color, i)
+    mask_neon = cv2.GaussianBlur(mask_neon,(2*i +1, 2*i + 1), 0)
+  ```
+  (2*i +1, 2*i + 1) is the matrix surrounding the pixel that it will look at and take the average value of them. The bigger the more blurred it will be. The 0 means let the function calculate automatically based on kernel size
+- Step 3: Blend the mask back to the origional image
+  ```python
+  cv2.addWeighted(mask_neon,0.7, image, 1,0,image)
+  ```
+  It is 1 which means keep the same image. So we don't do the transparent any more(try 0.3 you will see that it is behind dark layer). 0.7 of mask_neon will make it feel like there is a light right there. Don't worry if the background of origional image is in front because our mask is based on the transparent background label. We basically make this background label lighter at some point but it is still above the origional image
+   Step 4: Write the lighter color text to represent the light source
+  ```python
+  cv2.putText(image,text, text_start,style_text, text_size , inner_text_color, text_thick)
+  ```
+We are done with all technical detail. The actual code in draw_box.py, especially the ***draw_neon_label***, is kinda messed up due to the optimization. However, all the concepts are explained so it should be easy to spot it out. Thank you
