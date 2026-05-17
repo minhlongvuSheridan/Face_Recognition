@@ -1,3 +1,11 @@
+"""
+Author: Minh Long Vu
+Application: A small application that use SORT tracking to improve the speed of the YOLO + FaceNet/SVM face recognition
+Date: 17-05-2026
+"""
+
+
+
 import cv2
 from sklearn.preprocessing import LabelEncoder, Normalizer
 from sklearn.svm import SVC
@@ -9,7 +17,7 @@ from load_data import *
 import time
 
 WHITE = (255,255,255) 
-GREY = (128, 128, 128) # Medium Grey for background
+BACKGROUND_GREEN = (0, 60, 0) # Medium Grey for background
 LIGHT_GREEN =  (150, 255, 150) # lighter is closer to white so it is INNER
 MEDIUM_GREEN = (0, 200, 0) # outer
 
@@ -113,8 +121,8 @@ while True:
                             LIGHT_GREEN, MEDIUM_GREEN, BORDER_STRENGTH, length, BORDER_THICK)
             
             draw_neon_label(img, x1, y1, x2, y2, name_info, 
-                            LIGHT_GREEN, MEDIUM_GREEN,TEXT_STRENGTH, TEXT_SIZE,
-                            GREY, LIGHT_GREEN, MEDIUM_GREEN, BORDER_STRENGTH,BORDER_THICK)
+                            LIGHT_GREEN, MEDIUM_GREEN, TEXT_SIZE,
+                            BACKGROUND_GREEN, LIGHT_GREEN, MEDIUM_GREEN, BORDER_STRENGTH,BORDER_THICK)
         else:
             sub_image = img.copy()[y1:y2,x1:x2]
             to_embbeded_images.append(sub_image)
@@ -138,8 +146,8 @@ while True:
                 draw_neon_corners(img, x1, y1, x2, y2,
                                   LIGHT_GREEN, MEDIUM_GREEN, BORDER_STRENGTH, length, BORDER_THICK)
                 draw_neon_label(img, x1, y1, x2, y2, name_info, 
-                                LIGHT_GREEN, MEDIUM_GREEN,TEXT_STRENGTH, TEXT_SIZE,
-                                GREY, LIGHT_GREEN, MEDIUM_GREEN, BORDER_STRENGTH,BORDER_THICK)
+                                LIGHT_GREEN, MEDIUM_GREEN, TEXT_SIZE,
+                                BACKGROUND_GREEN, LIGHT_GREEN, MEDIUM_GREEN, BORDER_STRENGTH,BORDER_THICK)
     
     end_time = time.time()
     elapsed_time = end_time - start_time  

@@ -1,3 +1,8 @@
+"""
+Author: Minh Long VU
+"""
+
+
 import cv2
 from os import listdir
 
