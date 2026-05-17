@@ -59,7 +59,7 @@ python main.py
 </table>
 With basic tracking, the FPS is improved from below 5 all the time to around 25 most the time
 
-# GPU notes
+# GPU notes📟
 If you only run it on CPU, it might be extremely slow. Both my demo run on the GPU. Ensure that you already installed **CUDA Toolkit** and **cuDNN**. <br/>
 If you don't know how, please watch at *1:09:02* to this tutorial **https://www.youtube.com/watch?v=WgPbbWmnXJ8&t=11529s**. He will guide you how to do it
 
