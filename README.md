@@ -1,6 +1,6 @@
-<h1 align="center">Face Recognition with YOLO, SORT, and FaceNet+SVM</h1>
+<h1 align="center">🕵️‍♂️Face Recognition with YOLO, SORT, and FaceNet+SVM🕵️‍♂️</h1>
 
-# Description
+# Description📝
 This is the project that mark my first step in AI field. If you look at several videos on *Face Recognition* on youtube, you will see that their speed is kind of slow. This is because the face recognition stage is inherently slow.  <br/>
 <p align="center">
   <img width="1380" height="238" alt="image" src="https://github.com/user-attachments/assets/5882728a-6a1b-4746-aea6-b9a086202997" />
@@ -17,7 +17,7 @@ The question "Where is the face" is really cheap since YOLO could detect multipl
 As an solution for that problem, I add the tracking phase where we will ask "Is this the same face" before going to recognition. This question of tracking is just as cheap as detection. If this the same face, it will bypass the recognition and display it directly
 If it is not, the model will perform recognition. If the model is confident in the result (highest probability and > 60), the face will be tracked and won't go through the recognition again as long as it keep its ID. The result is really good with the improvement from 5 FPS up to 25 FPS almost all the time.<br/> 
 
-# Run scripts
+# Run scripts🚀
 There are two files: **main.py** for face recognition with tracking and **facenet_no_sort.py** for face recognition without tracking.
 To run scripts, open your terminal and run those commands
 ```python
@@ -32,7 +32,7 @@ pip install -r requirements.txt
 python main.py
 # If want to run no tracking: python facenet_no_sort.py
 ```
-# Demo
+# Demo📊
 
 <table>
   <tr>
@@ -52,14 +52,14 @@ With basic tracking, the FPS is improved from below 5 all the time to around 25 
 If you only run it on CPU, it might be extremely slow. Both my demo run on the GPU. Ensure that you already installed **CUDA Toolkit** and **cuDNN**. <br/>
 If you don't know how, please watch at *1:09:02* to this tutorial **https://www.youtube.com/watch?v=WgPbbWmnXJ8&t=11529s**. He will guide you how to do it
 
-# Customize the identity 
+# Customize the identity👤
 If you want to add new identity, create a new folder with the target's name in the identity folder. 
 <img width="1908" height="378" alt="image" src="https://github.com/user-attachments/assets/fb8f831f-eaf0-4b55-93a0-0a9d4cc8c3f7" />
 I found out that around 20 images of an identity should be good for face recognition. Remember to crop the image to take only the face
 so the model can only learn from the face not the surrounding enviroment
 <img width="1461" height="521" alt="image" src="https://github.com/user-attachments/assets/bb198405-a257-4713-a469-69f366ce5616" />
 
-# Trainning YoLo model 
+# Trainning YoLo model🏋️‍♂️ 
 The YOLO model was trained on 300 images on the yolov8l.yaml. It is fine but it could be better with more data. I suggest adding more 700 images of different faces, even better if they are augmented. <br/>
 If you intend to train better YOLO model, generally there are four steps:
 - Step 1: Delete the *data* folder 
