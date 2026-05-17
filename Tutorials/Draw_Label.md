@@ -1,10 +1,10 @@
 # 1 What we have from YoLo and Computer Vision
 ## 4 Points
-The yolo return us two points. Top left and bottom right
+The yolo return us two points. Top left and bottom right <br/>
 <img width="500" height="400" alt="image" src="https://github.com/user-attachments/assets/69b84e4e-bf6c-4f58-9de4-ecfa1d599a21" />
 
 
-From those two points, we can actually calculate the top right and bottom left ourself
+From those two points, we can actually calculate the top right and bottom left ourself<br/>
 <img width="500" height="400" alt="image" src="https://github.com/user-attachments/assets/9532d1f5-eaa3-4310-8826-3f8020e1172b" />
 
 ## Technique to draw
@@ -26,6 +26,9 @@ In this project we use ***OpenCv*** to help us draw some basic shapes. Here are 
 - Blur the image: ```python cv2.(src_img, kernel_size,sigmaX )```
   This is main technique to create the neon effect. Kernel is in the format (x,y) where x and y is the width and height of the matrix, respectively. Basically each pixel will be the average of thix matrix. sigMax is the standard
   deviation of axis X. It messaure the spread. Usually specified as 0 means let the function automatically apply
+- Get the width and height of text size: ```python cv2.getTextSize(	text, fontFace, fontScale, thickness)```
+  Get the height and width of the text based on the content, font type, size and thickness. It return three parameters (width,heigh), baseline. We only interested in the first tuple
+  (width, height) 
   
 
 That is pretty much everything we need from opencv
@@ -71,7 +74,7 @@ This is just one one illustration. The label must be relative to the positiion t
 <img width="810" height="719" alt="image" src="https://github.com/user-attachments/assets/e1fb5870-7b15-4287-981b-bb4377d08507" />
 
 ### Position of the label rectangle
-First thing to determine the position of the label rectangle. We need to determine the two points of the connector and the one corner of the label rectangle. Lets call one end of connector connected to the face ***face_connect*** and the other end connected with label ***label_connect***. The bottom left of the label will be **bottom_left_label**. You might ask we do we need the bottom left one? This is the position of ***label_connect*** is not stable and we need a fixed position to put the text later. We actually calculate **bottom_left_label** from the ***label_connect***
+First thing to determine the position of the label rectangle. We need to determine the two points of the connector and the one corner of the label rectangle. Lets call one end of connector connected to the face ***face_connect*** and the other end connected with label ***label_connect***. The bottom left of the label will be **bottom_left_label**. You might ask we do we need the bottom left one? This is the position of ***label_connect*** is not stable and we need a fixed position to put the text later. We actually calculate **bottom_left_label** from the ***label_connect***. We would like the slope of the connector line to be 45 degrees.
 <img width="917" height="634" alt="image" src="https://github.com/user-attachments/assets/26be5087-0cdd-4a2e-873a-576d9cdb4271" />
 
 
@@ -90,12 +93,98 @@ center_face = ((x1+x2)//2, (y1+y2)//2)
 <img width="392" height="346" alt="image" src="https://github.com/user-attachments/assets/e3302763-4fab-46dc-860a-181208e2087e" />
 
 #### Case 1: Face is on the top right
-#### Case 2: Face is on the top right
+<img width="732" height="598" alt="image" src="https://github.com/user-attachments/assets/ad6556b4-65fb-4b2d-950a-dc9c61a79c4c" />
+
+```python
+face_connect = (x1,y2)
+label_connect = (face_connect[0] - delta_x, face_connect[1] + delta_y)
+bottom_left_label = (label_connect[0] - rect_width, label_connect[1] + rect_height)
+```
+
+#### Case 2: Face is on the top left
+<img width="673" height="587" alt="image" src="https://github.com/user-attachments/assets/643f5a6f-9476-47b5-8896-027d886f9bec" />
+
+```python
+face_connect = (x2, y2)
+label_connect = (face_connect[0] + delta_x, face_connect[1] + delta_y)
+bottom_left_label = (label_connect[0], label_connect[1] + rect_height)
+```
 #### Case 3: Face is on the bottom right 
+<img width="716" height="615" alt="image" src="https://github.com/user-attachments/assets/4d5cc5c4-54da-4893-b482-72e234d0f4be" /><br/>
+
+```python
+face_connect = (x1,y1)
+label_connect = (face_connect[0] - delta_x, face_connect[1] - delta_y)
+bottom_left_label = (label_connect[0] - rect_width,label_connect[1])
+```
 ### Case 4: Face is on the bottom left
-### Blending images
+<img width="678" height="616" alt="image" src="https://github.com/user-attachments/assets/a47c51af-ea3b-481f-b168-3404558dd177" /> <br/>
+
+```python
+face_connect = (x2,y1)
+label_connect = (face_connect[0] + delta_x, face_connect[1] - delta_y)
+bottom_left_label = label_connect
+```
+
 
 ### Draw the text
+Before drawing the text, we need to position it inside the label rectangle. <br/>
+Calculate the height and the width of text<br/>
+<img width="406" height="163" alt="image" src="https://github.com/user-attachments/assets/3719b279-fd74-4576-9e13-98b62620bd93" /><br/>
 
+```python
+((text_width, text_height), _ = cv2.getTextSize(Text,text_font, text_size, text_thickness))
+```
+Assume that the user already provided the spacing and padding of the text inside the box. Recall the bottom_left_label that we calculate
+in the previous section. Now we calculate the position of text. I will work on the case of three text, i would be similiar for any number of text
+<img width="546" height="507" alt="image" src="https://github.com/user-attachments/assets/dc1ece5b-5b60-46c8-870d-72714bd631bd" />
+
+
+```python
+text_1_start_point = (bottom_left_label[0] + padding, bottom_left_label[1] - padding)
+text_2_start_point = (text_1_start_point[0], text_1_start_point[1] - text_height - spacing)
+```
+
+
+
+We now can also calculate the width,height, top left, and bottom right of the label
+```python
+max_width = max(text_width_1, text_2_width)
+max_height = text_height
+rec_width = text_width + 2 * padding
+rec_height = 2 * text_height + 2 * padding + line_spacing
+label_top_left = (bottom_left[0], bottom_left[1] - rec_height)
+label_bottom_right = (bottom_left[0] + rec_width, bottom_left[1])
+```
+
+
+
+Now we are pretty much done with preparing all the thing. But it one thing is missing. That is the background of the text inside the label to differentiate it from the background
+of the image. We can solve it by fill in some 
+### Blending images
+To make the background for image text, we can just set the **thickness* parameter of **cv2.rectangle** to -1. But doing that will overide the origional image. 
+<img width="975" height="265" alt="image" src="https://github.com/user-attachments/assets/7e709383-3736-4007-a447-2483ad9680cf" /> <br/>
+While it is okay, but we want more than that. We want it to be transparent label so that it resemble the glass-style monitor
+<img width="991" height="264" alt="image" src="https://github.com/user-attachments/assets/bfc624ae-7270-41fb-9607-80d37b679319" />
+Remember that if though it appear that the label image is on top of origional image, there is actually only single pixel that contains RGB channel. nothing on stop of anything. To create the illusion, we use a technique call "blending images" or basically just combine them. Specially we will use linear blending <br/>
+$$g(x) = (1 - \alpha)f_1(x) + \alpha f_2(x)$$ <br/>
+where $$f_1$$, $$f_2$$, and $$g(x)$$ are the images color of the **src_img1**, **src_img2**, and **final_img**,respectively. The $$\alpha$$ is the transparency. <br/>
+If we want the **src_img2** to appear on top of **src_img1**, we need to set $$\alpha$$ to be larger than 0.5<br/>
+- Step 1: Create another image layer with the same size at the label rectangle<br/>
+  ```python overlay = image.copy()```
+- Step 2: In the new layer, fill in with you desired color. Remember to set thickness to -1 <br/>
+  ```python cv2.rectangle(image, label_top_left,  label_bottom_right, border_color, -1)```
+- Step 3: Combine both the layers, let the final result overide the origional image.<br/>
+  ```python cv2.addWeighted(overlay,0.6,image,1- 0.6,0,image) ```
+
+We now can write the text and draw the rectangle perimeter
+```python
+cv2.putText(image,Text_1, text_1_start_point ,style_text, text_size ,text_color, text_thickness)
+cv2.putText(image,Text_2, text_2_start_point ,style_text, text_size ,text_color, text_thickness)
+cv2.rectangle(image, label_top_left,  label_bottom_right, border_color, border_thickness)
+```
 # 3 Drawing with neon effect
+We are now done with label things. But it looks somewhat boring now. We want more than that. We want the text look like as if it was from the actual monitor light <br/>
+
+
 Even though the code in the file is the mess up (it does have resonable rationale of optimizing). There is a clear pattern of doing the image.
