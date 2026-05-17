@@ -20,7 +20,7 @@ This is the project that mark my first step in AI field. If you look at several 
   <b>Figure 1. YOLO + (FaceNet + SVM)</b>
 </p>
 
-The question "Where is the face" is really cheap since YOLO could detect multiple faces with the same cost of around 30ms. However, the question "what does the question look like" is quite expensive since FaceNet has to run its complex neural network to extract the feature. Each face could take around 60ms. For every new frame, the usual tutorials do the recognition right after the recognition.  <br/>
+The question "Where is the face" is really cheap since YOLO could detect multiple faces with the same cost of around 30ms. However, the question "what does the question look like" is quite expensive since FaceNet has to run its complex neural network to extract the feature. It could take around 60ms. For every new frame, the usual tutorials do the recognition right after the recognition.  <br/>
 <div align="center">
   <img width="1449" height="316" alt="image" src="https://github.com/user-attachments/assets/23d6477a-59ca-48dd-a763-014bcbd5aac3" />
 
