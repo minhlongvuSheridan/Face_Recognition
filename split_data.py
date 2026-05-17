@@ -118,7 +118,7 @@ def copy_images_labels_to_dest(images_dir,labels_dir, dest):
     
     
     
-images_dir = r"C:\Users\haivu\OneDrive - Sheridan College\Desktop\computer\Project\Face_Recognition\images"
-labels_dir = r"C:\Users\haivu\OneDrive - Sheridan College\Desktop\computer\Project\Face_Recognition\labels"
+images_dir = r"images"
+labels_dir = r"labels"
 
 copy_images_labels_to_dest(images_dir,labels_dir,"./")
