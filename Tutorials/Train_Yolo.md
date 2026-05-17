@@ -179,39 +179,7 @@ It is the most convinient if we can just train the model locally because we coul
 <img width="948" height="243" alt="image" src="https://github.com/user-attachments/assets/aad982f7-b4c6-43fe-8cda-550766c2f861" />
 
 - Step 15: Create script files<br/>
-Create a file called *draw_box.py* with the code
-  ```python
-  import cv2
-  def draw_corners(image, x1, y1, x2, y2, length, thick):
-      l = length
-      t = thick
-      green_retro = (44,255,5)
-      
-      # Top Left
-      cv2.line(image, (x1, y1), (x1 + l,y1), green_retro, t )
-      cv2.line(image, (x1, y1), (x1,y1 + l), green_retro, t )
-      
-      # Top Right
-      cv2.line(image, (x2, y1), (x2 - l, y1), green_retro, t )
-      cv2.line(image, (x2, y1), (x2, y1 + l), green_retro, t )
-      
-      # Bottom Left
-      cv2.line(image, (x1, y2), (x1 + l, y2), green_retro, t )
-      cv2.line(image, (x1, y2), (x1, y2 - l), green_retro, t )
-      
-      # Bottom Right
-      cv2.line(image, (x2, y2), (x2 - l,y2), green_retro, t )
-      cv2.line(image, (x2, y2), (x2,y2 - l), green_retro, t )
-  
-  
-  def draw_label(image, x1, y1,label, color_text, color_box):
-      overlay = image.copy()
-      (text_width, text_height), _ = cv2.getTextSize(label,cv2.FONT_HERSHEY_SIMPLEX, 0.8, 1)
-      
-      cv2.rectangle(overlay,(x1 - 5,y1 - 15 + 10 ),(x1 + text_width + 5,y1 - text_height - 15 - 10), color_box,-1)
-      cv2.addWeighted(overlay,0.6,image,1- 0.6,0,image) 
-      cv2.putText(image,label, (x1, y1 - 15),cv2.FONT_HERSHEY_SIMPLEX, 0.8,  color_text, 1)
-  ```
+  Download the script file draw_box.py <br/>
   And then create a file name ***main.py***
   ```python
   import cv2
@@ -234,8 +202,16 @@ Create a file called *draw_box.py* with the code
               length = side_length // 6
               
               conf = int(float(box.conf[0]) * 100)
-              draw_corners(img, x1,y1,x2,y2,length,2)
-              draw_label(img, x1, y1, f"Face: {conf:.2f}",(65,255,0),(0,0,0)) 
+              name_info= dict()
+              name_info["name"] = name
+              print(name)
+              name_info["job"] = names_information[name]["job"]
+              name_info["country"] = names_information[name]["country"]
+              draw_neon_corners(img, x1, y1, x2, y2,
+                                  LIGHT_GREEN, MEDIUM_GREEN, BORDER_STRENGTH, length, BORDER_THICK)
+              draw_neon_label(img, x1, y1, x2, y2, name_info, 
+                                LIGHT_GREEN, MEDIUM_GREEN,TEXT_STRENGTH, TEXT_SIZE,
+                                GREY, LIGHT_GREEN, MEDIUM_GREEN, BORDER_STRENGTH,BORDER_THICK)
               
       cv2.imshow("Image", img)
       cv2.waitKey(1)
