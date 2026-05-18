@@ -50,7 +50,7 @@ python main.py
   <tr>
     <td>
       <p align="center"><b>With SORT Tracking</b></p>
-      <video src="https://github.com/user-attachments/assets/45ab2e4d-7f22-49aa-ad88-656c24732aac" width="60%" controls></video>
+      <video src="https://github.com/user-attachments/assets/fce3d778-5d5a-4863-8497-103b5b8cda02" width="60%" controls></video>
     </td>
     <td>
       <p align="center"><b>Without SORT Tracking</b></p>
